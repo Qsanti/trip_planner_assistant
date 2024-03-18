@@ -1,13 +1,5 @@
 import streamlit as st
 import os
-from time import sleep
-
-
-import folium
-import osmnx
-import leafmap.foliumap as leafmap
-import pandas as pd
-
 
 from src.structures.travelplan import TravelPlan
 
@@ -25,40 +17,49 @@ st.set_page_config(
 
 st.title("Friendly Travel Advisor")
 
+
 st.write(
     "Welcome to the Friendly Travel Advisor! Ask me anything about travel and I'll do my best to help you out."
 )
 
-
 with st.sidebar:
-    # Assuming you have some way of tracking if `travel_plan` changes
 
-    # # make sidebar wider
-    # st.markdown(
-    #     "<style>div.Widget.row-widget.stRadio > div{flex-direction:column;}</style>",
-    #     unsafe_allow_html=True,
-    # )
+    st.subheader("Add your api keys")
 
-    # add a image  in the sidebar
-    st.image(
-        "https://assets-global.website-files.com/62192ceb9199b3dd08431a6b/62192ceb9199b3803f431b3a_Light.svg",
-        width=200,
-    )
-    # st.subheader("Add your api keys")
-    # if "OPENAI_API_KEY" in st.secrets:
-    #     st.success("API key already provided!", icon="✅")
-    #     os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
-    # else:
-    #     os.environ["OPENAI_API_KEY"] = st.text_input(
-    #         "Enter your OpenAI API token:", type="password"
-    #     )
-    #     if not (
-    #         os.environ.get("OPENAI_API_KEY", "").startswith("sk-")
-    #         and len(os.environ.get("OPENAI_API_KEY", "")) == 51
-    #     ):
-    #         st.warning("Please enter your credentials!", icon="⚠️")
-    #     else:
-    #         st.success("API key set!", icon="👍")
+    if "OPENAI_API_KEY" in st.secrets:
+        st.success("API key already provided!", icon="✅")
+        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+    else:
+        os.environ["OPENAI_API_KEY"] = st.text_input(
+            "Enter your OpenAI API token:", type="password"
+        )
+        if not (
+            os.environ.get("OPENAI_API_KEY", "").startswith("sk-")
+            and len(os.environ.get("OPENAI_API_KEY", "")) == 51
+        ):
+            openai_flag = False
+        else:
+            openai_flag = True
+
+    if "GMAPS_API_KEY" in st.secrets:
+        st.success("API key already provided!", icon="✅")
+        os.environ["GMAPS_API_KEY"] = st.secrets["GMAPS_API_KEY"]
+    else:
+        os.environ["GMAPS_API_KEY"] = st.text_input(
+            "Enter your Google Maps API token:", type="password"
+        )
+        if not (
+            os.environ.get("GMAPS_API_KEY", "").startswith("AIza")
+            and len(os.environ.get("GMAPS_API_KEY", "")) == 39
+        ):
+            gmaps_flag = False
+        else:
+            gmaps_flag = True
+
+    if not openai_flag or not gmaps_flag:
+        st.warning("Please enter your credentials!", icon="⚠️")
+    else:
+        st.success("API keys set!", icon="✅")
 
     # BASEMAPS = ["Satellite", "Roadmap", "Terrain", "Hybrid", "OpenStreetMap"]
     # basemap = st.selectbox("Choose basemap", BASEMAPS)
@@ -97,7 +98,7 @@ with st.sidebar:
 
     # # add a button to download the data
     st.download_button(
-        label="Download travel plan as CSV",
+        label="Download travel plan as CSV 📂",
         data=travel_plan.get_df().to_csv(index=False),
         file_name="travel_plan.csv",
         mime="text/csv",
@@ -106,7 +107,7 @@ with st.sidebar:
     # Add clear button
     if st.button("Clear travel plan 🗑️"):
         travel_plan.clear()
-        st.experimental_rerun()
+        st.rerun()
 
 
 # Set up the session state to store messages
@@ -137,6 +138,4 @@ if prompt := st.chat_input("Write a message..."):
         message_placeholder.markdown(f"**{roles_names['assistant']}**: {response}")
         st.session_state.messages.append({"role": "assistant", "content": response})
 
-        # show_travel_plan()
-        # refresh sidebar
-    st.experimental_rerun()
+    st.rerun()

@@ -1,8 +1,10 @@
 import googlemaps
 from datetime import datetime
+import os
 
-gmaps = googlemaps.Client(key="AIzaSyCBpuqGMj7mGVcdWDY7nqTBaUKLTmlmkrY")
+GMAPS_API_KEY = os.environ.get("GMAPS_API_KEY")
 
+gmaps = googlemaps.Client(key=GMAPS_API_KEY)
 g_per_km = {"transit": 10, "driving": 50, "air": 100, "walking": 0, "bicycling": 0}
 
 
