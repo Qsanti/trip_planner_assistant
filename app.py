@@ -29,6 +29,7 @@ with st.sidebar:
     if "OPENAI_API_KEY" in st.secrets:
         st.success("API key already provided!", icon="✅")
         os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+        openai_flag = True
     else:
         os.environ["OPENAI_API_KEY"] = st.text_input(
             "Enter your OpenAI API token:", type="password"
@@ -44,6 +45,7 @@ with st.sidebar:
     if "GMAPS_API_KEY" in st.secrets:
         st.success("API key already provided!", icon="✅")
         os.environ["GMAPS_API_KEY"] = st.secrets["GMAPS_API_KEY"]
+        gmaps_flag = True
     else:
         os.environ["GMAPS_API_KEY"] = st.text_input(
             "Enter your Google Maps API token:", type="password"
