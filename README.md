@@ -110,3 +110,35 @@ trip_planner_assistant/
 │
 └── README.md                     # Detailed project documentation.
 ```
+
+### Code logic
+
+The project is organized in the following way:
+
+* The `app.py` file is the main entry point of the Streamlit application. It is responsible for rendering the user interface and handling user inputs via the chat interface.. It interacts with the `travelplan` singleton class to display the current state of the travel plan lead the user donwload it. Also ask the api keys and export them to the environment variables.
+* When a response need to be generated, the `generate_response` function from `ai.py` is called. And here is where all the magic happens.
+* The `ai.py` file is the entry point for the AI module. It prepares all of the components required to run the LLM model:
+
+* Initialize the LLM model.
+* Loads the system prompt and tools prompts dictionaries.
+* Loads the functions to be called by the LLM and creates a `toolbox`, wrapping the functions with their corresponding prompts dictionaries.
+* Import the `run_llm` function from `llm_utils` that is a generic function to run LLM AGen with a prompt, llm model, chat history and tools. (imported in the previous steps)
+
+* So when the `generate_response` function is called, it uses the `run_llm` function, to run the LLM model with the system prompt, chat history and tools to generate a response. The response is then returned to the `app.py` file to be displayed to the user.
+* The functions to be called by the LLM are defined in the `functions.py` file and (as said before) are wrapped with their corresponding prompts dictionaries in the `toolbox` object. These functions are triggered by the LLM model when the user asks for a specific action to be performed or when the LLM model needs to gather information to generate a response. These are:
+
+  -`get_route_info`: Gets information about a specific route. Given the the start and end locations, among other parameters, it does the following:
+
+  1. Validates the input parameters, using the adress validation api.
+  2. Gets the route information from the Google Maps API for each available mode of transportation (driving, walking, bicycling, and transit).
+  3. Get and format the total time and distance for each mode of transportation. And calculates an estimated CO2 emissions.
+  4. Generate the Maps URL for each mode of transportation.
+
+  -`get_mixed_route`: Gets a mixed route. Given the a list of legs, each with a start and end location, and a mode of transportation, it does the following:
+
+  1. Validates the input parameters, using the adress validation api.
+  2. Gets the route information from the Google Maps API for each leg with the specified mode of transportation.
+  3. Calculates an estimated CO2 emissions and the total time and distance for the entire route.
+  4. Generate the Maps URL for each leg and mode of transportation.
+
+  -`add_route`: Adds a route to the travel plan. Given all the parameters, it adds a new route to the travel plan and returns a confirmation message. This functions initializes the `travelplan` singleton class and calls the `add_route` method to add the route to the travel plan. So the display is updated with the new route (cause is using th same instance of the `travelplan`).
