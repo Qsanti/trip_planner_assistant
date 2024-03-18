@@ -13,7 +13,7 @@ LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-4-0125-preview")
 
 # Create the chat model
 chat_llm = ChatOpenAI(
-    temperature=0,
+    temperature=0.2,
     model_name=LLM_MODEL,
     request_timeout=60,
 )
