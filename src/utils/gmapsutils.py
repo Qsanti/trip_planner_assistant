@@ -1,5 +1,8 @@
+# Description: This file contains the functions to interact with the Google Maps API
+
 import googlemaps
 from datetime import datetime
+import urllib.parse
 import os
 
 from ..utils.parsers import parse_distance_to_km, parse_time_to_mins
@@ -11,6 +14,7 @@ gmaps = googlemaps.Client(key=GMAPS_API_KEY)
 g_per_km = {"transit": 10, "driving": 50, "air": 100, "walking": 0, "bicycling": 0}
 
 
+# Function to get the possible routes info.
 def get_routes(
     A: str,
     B: str,
@@ -34,6 +38,7 @@ def get_routes(
     return directions_result
 
 
+# Function to get the insight for a route.
 def get_insight_for_route(route: dict):
     time = route["legs"][0]["duration"]["text"]
     distance = route["legs"][0]["distance"]["text"]
@@ -47,15 +52,13 @@ def get_insight_for_route(route: dict):
     return {"time": time, "distance": distance, "carbon": carbon}
 
 
+# Function to get the valid address.
 def get_valid_address(address: str, regionCode: str):
     addressvalidation_result = gmaps.addressvalidation([address], regionCode=regionCode)
-
     return addressvalidation_result["result"]["address"]["formattedAddress"]
 
 
-import urllib.parse
-
-
+# Function to create a maps URL
 def create_maps_url(
     origin=None,
     destination=None,

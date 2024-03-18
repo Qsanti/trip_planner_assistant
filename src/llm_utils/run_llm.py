@@ -1,5 +1,5 @@
 import json
-from typing import List, Dict, Tuple, Callable
+from typing import List, Dict, Tuple, Callable, Union
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain.schema import (
     FunctionMessage,
@@ -9,10 +9,8 @@ from langchain.schema import (
     SystemMessage,
 )
 
-from typing import List, Dict, Tuple, Callable, Union
 
-
-# Function to run the AI
+# Function to run the LLM Agent
 def run_llm(
     system_message: SystemMessage,
     previous_messages: List[Union[HumanMessage, AIMessage]],
@@ -21,7 +19,7 @@ def run_llm(
     max_function_iterations: int = 3,
 ) -> AIMessage:
     """
-    Run the AI
+    Run the AI model. Given the previous messages, the function generates the response from the AI model using functions from the toolbox.
 
     Args:
         system_message (SystemMessage): System message of the Agent

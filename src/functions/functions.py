@@ -1,15 +1,15 @@
+from datetime import datetime
+from ..structures.travelplan import TravelPlan
 from ..utils.gmapsutils import (
     get_insight_for_route,
     get_routes,
     get_valid_address,
     create_maps_url,
 )
-from ..structures.travelplan import TravelPlan
 from ..utils.parsers import parse_distance_to_km, parse_time_to_mins
 
-from datetime import datetime
 
-
+# Function to get the possible routes info
 def get_posible_routes_info(
     origin: str,
     origin_region: str,
@@ -18,6 +18,19 @@ def get_posible_routes_info(
     waypoints: list = [],
     departure_time: str = None,
 ):
+    """Get the possible routes info from the origin to the destination.
+
+    Args:
+        origin (str): Origin address
+        origin_region (str): Origin region
+        destination (str): Destination address
+        destination_region (str): Destination region
+        waypoints (list, optional): Waypoints. Defaults to [].
+        departure_time (str, optional): Departure time. Defaults to None.
+
+    Returns:
+        str: The possible routes info. In a formatted string.
+    """
     origin = get_valid_address(origin, origin_region)
     destination = get_valid_address(destination, destination_region)
     waypoints = [get_valid_address(waypoint, origin_region) for waypoint in waypoints]
@@ -70,10 +83,24 @@ def get_posible_routes_info(
 def add_route_to_travel_plan(
     origin: str, destination: str, departure_time: str, mode: str, waypoints: list = []
 ):
+    """Add a route to the travel plan.
+
+    Args:
+        origin (str): Origin address
+        destination (str): Destination address
+        departure_time (str): Departure time
+        mode (str): Mode of transportation
+        waypoints (list, optional): Waypoints. Defaults to [].
+
+    Returns:
+        str: Confirmation message.
+    """
     # get datetime from ISO 8601 format
     departure_time = datetime.strptime(departure_time, "%Y-%m-%dT%H:%M:%S")
 
+    # Initialize the travel plan (Singleton pattern)
     travel_plan = TravelPlan()
+    # Get the valid addresses
     url = create_maps_url(origin=origin, destination=destination, travelmode=mode)
     insight = get_insight_for_route(
         get_routes(
@@ -106,6 +133,15 @@ def add_route_to_travel_plan(
 
 
 def get_mixed_routes_info(departure_time: str, routes: list):
+    """Get the mixed routes info.
+
+    Args:
+        departure_time (str): Departure time
+        routes (list): List of routes
+
+    Returns:
+        str: The mixed routes info. In a formatted string.
+    """
 
     mode_insigths = {}
 
