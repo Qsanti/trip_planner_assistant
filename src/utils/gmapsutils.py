@@ -43,8 +43,8 @@ def get_insight_for_route(route: dict):
     time = route["legs"][0]["duration"]["text"]
     distance = route["legs"][0]["distance"]["text"]
     carbon = 0
-    DISTANTCE = 0
     for step in route["legs"][0]["steps"]:
+        step_distance = step["distance"]["text"]
         step_distance = parse_distance_to_km(step_distance)
         carbon += step_distance * g_per_km[step["travel_mode"].lower()]
 

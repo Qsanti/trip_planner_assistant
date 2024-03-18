@@ -22,7 +22,7 @@ function_dictionary = {
             },
             "departure_time": {
                 "type": "string",
-                "description": "The time of the departure in 'YYYY-MM-DD HH:MM:SS' format. Example: '2021-12-31 12:00:00'",
+                "description": "The time of the departure in 'YYYY-MM-DDTHH:MM:SS' format. Example: '2021-12-31T23:59:59'",
             },
             # "waypoints": {
             #     "type": "array",

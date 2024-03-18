@@ -10,7 +10,7 @@ Chat AI assistant to help trip planning. 🚗🚲🚆
 
 ### Example short use-case video
 
-video.con (TODO)
+[Quick video demo](https://drive.google.com/file/d/10N4BsDj96r8z6F76LG5X-nL0oQkCuAjo/view?usp=sharing)
 
 ### Instructions
 
@@ -118,12 +118,10 @@ The project is organized in the following way:
 * The `app.py` file is the main entry point of the Streamlit application. It is responsible for rendering the user interface and handling user inputs via the chat interface.. It interacts with the `travelplan` singleton class to display the current state of the travel plan lead the user donwload it. Also ask the api keys and export them to the environment variables.
 * When a response need to be generated, the `generate_response` function from `ai.py` is called. And here is where all the magic happens.
 * The `ai.py` file is the entry point for the AI module. It prepares all of the components required to run the LLM model:
-
 * Initialize the LLM model.
 * Loads the system prompt and tools prompts dictionaries.
 * Loads the functions to be called by the LLM and creates a `toolbox`, wrapping the functions with their corresponding prompts dictionaries.
 * Import the `run_llm` function from `llm_utils` that is a generic function to run LLM AGen with a prompt, llm model, chat history and tools. (imported in the previous steps)
-
 * So when the `generate_response` function is called, it uses the `run_llm` function, to run the LLM model with the system prompt, chat history and tools to generate a response. The response is then returned to the `app.py` file to be displayed to the user.
 * The functions to be called by the LLM are defined in the `functions.py` file and (as said before) are wrapped with their corresponding prompts dictionaries in the `toolbox` object. These functions are triggered by the LLM model when the user asks for a specific action to be performed or when the LLM model needs to gather information to generate a response. These are:
 
