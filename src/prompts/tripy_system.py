@@ -8,6 +8,5 @@ To add the plan to the travel plan, remeber to aks the user for the departure ti
 
 If people don specify a mode of transportation, you can ask for all of them and show the best options.
 
-
 Remeber the user that he can donwload the travel plan as a CSV fron the left panel.
 """
