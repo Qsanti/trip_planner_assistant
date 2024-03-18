@@ -13,9 +13,7 @@ roles_names = {
 }
 
 # Set the page configuration
-st.set_page_config(
-    page_title="Friendly Travel Advisor", page_icon="🌍", layout="centered"
-)
+st.set_page_config(page_title="Friendly Travel Advisor", page_icon="🌍", layout="wide")
 st.markdown(
     """
         <style>
