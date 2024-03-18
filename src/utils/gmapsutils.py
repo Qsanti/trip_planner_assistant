@@ -1,0 +1,92 @@
+import googlemaps
+from datetime import datetime
+
+gmaps = googlemaps.Client(key="AIzaSyCBpuqGMj7mGVcdWDY7nqTBaUKLTmlmkrY")
+
+g_per_km = {"transit": 10, "driving": 50, "air": 100, "walking": 0, "bicycling": 0}
+
+
+def get_routes(
+    A: str,
+    B: str,
+    mode: str,
+    alternatives: bool,
+    waypoints: list,
+    optimize_waypoints: bool,
+    traffic_model: str,
+    departure_time: datetime,
+):
+    directions_result = gmaps.directions(
+        A,
+        B,
+        mode=mode,
+        alternatives=alternatives,
+        waypoints=waypoints,
+        optimize_waypoints=optimize_waypoints,
+        traffic_model=traffic_model,
+        departure_time=departure_time,
+    )
+    return directions_result
+
+
+def get_insight_for_route(route: dict):
+    time = route["legs"][0]["duration"]["text"]
+    distance = route["legs"][0]["distance"]["text"]
+    carbon = 0
+    DISTANTCE = 0
+    for step in route["legs"][0]["steps"]:
+        step_distance, unit = step["distance"]["text"].split(" ")
+        step_distance = float(step_distance)
+        if unit == "m":
+            step_distance = step_distance / 1000
+        # print(f"DISTANCE: {step_distance} km")
+        carbon += step_distance * g_per_km[step["travel_mode"].lower()]
+        DISTANTCE += step_distance
+
+    # print(f"TOTAL DISTANCE: {DISTANTCE}")
+
+    return {"time": time, "distance": distance, "carbon": carbon}
+
+
+def get_valid_address(address: str, regionCode: str):
+    addressvalidation_result = gmaps.addressvalidation([address], regionCode=regionCode)
+
+    return addressvalidation_result["result"]["address"]["formattedAddress"]
+
+
+import urllib.parse
+
+
+def create_maps_url(
+    origin=None,
+    destination=None,
+    origin_place_id=None,
+    destination_place_id=None,
+    travelmode=None,
+    dir_action=None,
+    waypoints=None,
+):
+    base_url = "https://www.google.com/maps/dir/?api=1"
+    params = {}
+
+    origin_encoded = urllib.parse.quote(origin)
+    destination_encoded = urllib.parse.quote(destination)
+
+    if origin:
+        params["origin"] = origin
+    if destination:
+        params["destination"] = destination
+    if origin_place_id:
+        params["origin_place_id"] = origin_place_id
+    if destination_place_id:
+        params["destination_place_id"] = destination_place_id
+    if travelmode and travelmode in ["driving", "walking", "bicycling", "transit"]:
+        params["travelmode"] = travelmode
+    if dir_action and dir_action == "navigate":
+        params["dir_action"] = dir_action
+    if waypoints:
+        params["waypoints"] = waypoints
+
+    # Construct the query string
+    query_string = urllib.parse.urlencode(params, safe=",|").replace("%7C", "|")
+    return f"{base_url}&{query_string}"
