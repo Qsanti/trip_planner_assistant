@@ -2,6 +2,9 @@ import googlemaps
 from datetime import datetime
 import os
 
+from ..utils.parsers import parse_distance_to_km, parse_time_to_mins
+
+
 GMAPS_API_KEY = os.environ.get("GMAPS_API_KEY")
 
 gmaps = googlemaps.Client(key=GMAPS_API_KEY)
@@ -38,14 +41,8 @@ def get_insight_for_route(route: dict):
     DISTANTCE = 0
     for step in route["legs"][0]["steps"]:
         step_distance, unit = step["distance"]["text"].split(" ")
-        step_distance = float(step_distance)
-        if unit == "m":
-            step_distance = step_distance / 1000
-        # print(f"DISTANCE: {step_distance} km")
+        step_distance = parse_distance_to_km(step_distance, unit)
         carbon += step_distance * g_per_km[step["travel_mode"].lower()]
-        DISTANTCE += step_distance
-
-    # print(f"TOTAL DISTANCE: {DISTANTCE}")
 
     return {"time": time, "distance": distance, "carbon": carbon}
 
